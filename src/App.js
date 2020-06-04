@@ -10,8 +10,8 @@ export default class App extends Component {
     console.log('constructor render ');
     super();
     this.state = {
-      url:'https://api.github.com/users/',
-      userSearch:'',
+      url: 'https://api.github.com/users/',
+      userSearch: '',
       user: 'Owlspec3086',
       userData: [],
       followers: [],
@@ -27,9 +27,9 @@ export default class App extends Component {
       .get('https://api.github.com/users/Owlspec3086')
       .then((res) => {
         // console.log(res.data)
-        this.setState({ userData: res.data })
+        this.setState({ userData: res.data });
       })
-      .catch((err) => console.log(err))
+      .catch((err) => console.log(err));
 
     axios
       .get('https://api.github.com/users/Owlspec3086/followers')
@@ -39,49 +39,48 @@ export default class App extends Component {
       });
   }
   // #Stretch
-  // componentDidUpdate(prevProps, prevState) {
-  //   // console.log('did update')
-  //   if (this.state.user !== prevState.user) {
-  //     console.log('update');
-  //     axios
-  //       .get('https://api.github.com/users/Owlspec3086')
-  //       .then((res) => {
-  //         // console.log(res.data)
-  //         this.setState({ userData: res.data });
-  //       })
-  //       .catch((err) => console.log(err));
+  componentDidUpdate(prevProps, prevState) {
+    // console.log('did update')
+    if (this.state.user !== prevState.user) {
+      console.log('update');
+      axios
+        .get(`https://api.github.com/users/${this.state.user}`)
+        .then((res) => {
+          // console.log(res.data)
+          this.setState({ userData: res.data });
+        })
+        .catch((err) => console.log(err));
 
-  //     axios
-  //       .get('https://api.github.com/users/Owlspec3086/followers')
-  //       .then((res) => {
-  //         console.log(res.data);
-  //         this.setState({ followers: res.data });
-  //       });
-  //   }
-  // }
-
-  searchChange = evt=>{
-    this.setState({userSearch:evt.target.value})
+      axios
+        .get(`https://api.github.com/users/${this.state.user}/followers`)
+        .then((res) => {
+          console.log(res.data);
+          this.setState({ followers: res.data });
+        });
+    }
   }
-  searchSubmit = evt=>{
-    evt.preventDefault()
 
-    this.setState({user:this.state.userSearch})
-  
-  }
+  searchChange = (evt) => {
+    this.setState({ userSearch: evt.target.value });
+  };
+  searchSubmit = (evt) => {
+    evt.preventDefault();
+
+    this.setState({ user: this.state.userSearch });
+  };
 
   render() {
     console.log('render');
 
     return (
       <div className='App'>
-        <Search search={this.searchChange} submit={this.searchSubmit} />
+        <Search search={this.searchChange} submit={this.searchSubmit} userSearch={this.state.userSearch}/>
         <br />
 
         <div>
           <User userData={this.state.userData} />
         </div>
-        
+
         <div>
           {this.state.followers.map((item) => {
             return <Follower follower={item} />;
